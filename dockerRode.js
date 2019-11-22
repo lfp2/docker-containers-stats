@@ -1,4 +1,5 @@
-var Docker = require('../lib/docker');
+var Docker = require('./lib/docker');
+var stream = require('stream');
 var fs     = require('fs');
 
 var socket = process.env.DOCKER_SOCKET || '/var/run/docker.sock';
@@ -10,9 +11,16 @@ if (!stats.isSocket()) {
 
 var docker = new Docker({ socketPath: socket });
 
-docker.listContainers({all: true}, function(err, containers) {
+docker.listContainers({all: false}, function(err, containers) {
   console.log('ALL: ' + containers.length);
-  containers.forEach(container => {
-    console.log(container.stats());
+  containers.forEach(containerInfo => {
+  	var container = docker.getContainer(containerInfo['Id']);
+  	container.stats({stream: false}, function(err, stream){
+  		if(err) {
+      return logger.error(err.message);
+    }
+    console.log(JSON.stringify(stream, null, '\t'));
+  	});
+    // containerLogs(container);
   });
 });
