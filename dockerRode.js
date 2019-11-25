@@ -10,21 +10,18 @@ admin.initializeApp({
 });
 
 var db = admin.database();
-var ref = db.ref("public_resource/dockercontainerstats");
-var containersRef = ref.child("containers");
-
 
 
 var socket = process.env.DOCKER_SOCKET || '/var/run/docker.sock';
 var stats = fs.statSync(socket);
 
-console.log(stats);
+// console.log(stats);
 if (!stats.isSocket()) {
     throw new Error('Are you sure the docker is running?');
 }
 
 var docker = new Docker({ socketPath: socket });
-console.log(docker);
+// console.log(docker);
 
 
 docker.listContainers({ all: false }, function(err, containers) {
@@ -35,7 +32,18 @@ docker.listContainers({ all: false }, function(err, containers) {
             if (err) {
                 return logger.error(err.message);
             }
-            console.log(JSON.stringify(stream, null, '\t'));
+            // console.log(JSON.stringify(stream, null, '\t'));
+            // console.log(JSON.stringify(stream.name, null, '\t'));
+            console.log(stream.name);
+            console.log(stream.read);
+            var ref = db.ref("docker-infos/containers/" + stream.name);
+
+            let child = JSON.stringify(stream.read);
+            let dot = child.indexOf('.');
+            child = child.substring(1, dot);
+            console.log(child);
+            var containersRef = ref.child(child);
+
             containersRef.set(stream);
         });
         // containerLogs(container);
