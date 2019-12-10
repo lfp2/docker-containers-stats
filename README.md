@@ -3,8 +3,8 @@ React webpage showing Docker containers stats.
 
 # Libraries
 
-[Firebase] (https://www.npmjs.com/package/firebase)
-[React-rt-char](https://www.npmjs.com/package/react-rt-chart)
+- [Firebase](https://www.npmjs.com/package/firebase)
+- [React-rt-char](https://www.npmjs.com/package/react-rt-chart)
 
 # Configuration
 
